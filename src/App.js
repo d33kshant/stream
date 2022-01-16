@@ -19,27 +19,31 @@ function App() {
 	const [ user, loading, error ] = useAuthState(auth)
 
 	const toggleTheme = () => {
-		if (theme === 'light')
-			return setTheme('dark')
-		setTheme('light')
+		if (theme === 'light'){
+			document.body.classList.add('dark')
+			document.body.classList.remove('light')
+			setTheme('dark')
+		} else {
+			document.body.classList.add('light')
+			document.body.classList.remove('dark')
+			setTheme('light')
+		}
 	}
 
-	if (loading) return <LoadingPage />
-	if (error) return <ErrorPage />
-	if (!user) return <LoginPage />
+	if (loading) return <ThemeProvider value={{ theme, toggleTheme }} ><LoadingPage /></ThemeProvider>
+	if (error) return <ThemeProvider value={{ theme, toggleTheme }}><ErrorPage /></ThemeProvider>
+	if (!user) return <ThemeProvider value={{ theme, toggleTheme }}><LoginPage /></ThemeProvider>
 
 	return (
-		<div className={`app ${theme}`} >
-			<ThemeProvider value={{ theme, toggleTheme }} >
-				<AuthProvider value={{user}} >
-					<Router>
-						<Routes>
-							<Route path="/" element={<HomePage />} />
-						</Routes>
-					</Router>
-				</AuthProvider>
-			</ThemeProvider>
-		</div>
+		<ThemeProvider value={{ theme, toggleTheme }} >
+			<AuthProvider value={{user}} >
+				<Router>
+					<Routes>
+						<Route path="/" element={<HomePage />} />
+					</Routes>
+				</Router>
+			</AuthProvider>
+		</ThemeProvider>
 	)
 }
 
