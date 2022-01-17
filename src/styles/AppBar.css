@@ -1,0 +1,55 @@
+.appbar-main {
+	width: 100%;
+	border-bottom: 1px solid #e5e5e5;
+	background: white;
+	position: sticky;
+	top: 0;
+	box-sizing: border-box;
+}
+
+.appbar-container {
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+	height: 48px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.appbar-logo {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: black;
+	font-family: 'Roboto Condensed', sans-serif;
+	font-size: 18px;
+	/* font-weight: bold; */
+	height: 100%;
+	padding: 6px 12px;
+	box-sizing: border-box;
+	text-decoration: none;
+}
+
+.appbar-actions {
+	display: flex;
+}
+
+.appbar-action {
+	box-sizing: border-box;
+	padding: 16px;
+}
+
+.appbar-user-avatar {
+	border-radius: 50%;
+	height: 28px;
+}
+
+.dark .appbar-main {
+	background: #202020;
+	border-color: #373737;
+}
+
+.dark .appbar-logo {
+	color: white;
+}
