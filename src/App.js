@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuthState } from "react-firebase-hooks/auth"
 import {
 	BrowserRouter as Router,
@@ -12,11 +12,25 @@ import HomePage from "./pages/HomePage"
 import LoadingPage from "./pages/LoadingPage"
 import LoginPage from "./pages/LoginPage"
 import { auth } from "./firebase"
+import AppBar from "./components/AppBar"
+import VideoPage from "./pages/VideoPage"
+import "./styles/App.css"
 
 function App() {
 
 	const [theme, setTheme] = useState('light')
 	const [ user, loading, error ] = useAuthState(auth)
+
+	useEffect(() => {
+		const theme = localStorage.getItem('theme')
+		if (theme === 'dark') {
+			setTheme('dark')
+			document.body.classList.add('dark')
+		} else {
+			setTheme('light')
+			document.body.classList.add('light')
+		}
+	}, [])
 
 	const toggleTheme = () => {
 		if (theme === 'light'){
@@ -28,6 +42,7 @@ function App() {
 			document.body.classList.remove('dark')
 			setTheme('light')
 		}
+		localStorage.setItem('theme', theme)
 	}
 
 	if (loading) return <ThemeProvider value={{ theme, toggleTheme }} ><LoadingPage /></ThemeProvider>
@@ -37,11 +52,15 @@ function App() {
 	return (
 		<ThemeProvider value={{ theme, toggleTheme }} >
 			<AuthProvider value={{user}} >
-				<Router>
-					<Routes>
-						<Route path="/" element={<HomePage />} />
-					</Routes>
-				</Router>
+				<AppBar />
+				<div className="app-container" >
+					<Router>
+						<Routes>
+							<Route path="/" element={<HomePage />} />
+							<Route path="/watch" element={<VideoPage />} />
+						</Routes>
+					</Router>
+				</div>
 			</AuthProvider>
 		</ThemeProvider>
 	)
