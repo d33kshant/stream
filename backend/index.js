@@ -1,10 +1,12 @@
 require('dotenv').config()
 const expree = require('express')
+const fileUpload = require('express-fileupload')
 
 const PORT = process.env.PORT || 5000
 
 const app = expree()
 app.use(expree.json())
+app.use(fileUpload())
 
 app.get('/', (req, res) => {
 	res.json({
