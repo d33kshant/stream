@@ -1,4 +1,5 @@
 const path = require('path')
+const shortid = require('shortid')
 const pool = require('../db')
 
 /**
@@ -34,5 +35,39 @@ const getVideo = async (req, res) => {
 		})
 	}
 }
+ 
+/**
+ * @param {Request} req
+ * @param {Response} res
+ */
+const uploadVideo = async (req, res) => {
+	try {
+		const file = req.files['file']
+		if (!file) {
+			return res.json({
+				error: "No file to upload."
+			})
+		}
 
-module.exports = { getVideo }
+		if (file.mimetype !== 'video/mp4') {
+			return res.json({
+				error: "File must be a mp4 video."
+			})
+		}
+
+		const id = shortid.generate()
+		const newFile = path.join(__dirname, path.join('..', path.join('files', `${id}.mp4`)))
+		await file.mv(newFile)
+
+		res.json({
+			message: "File uploaded successfully.",
+			url: `${process.env.BASE_URL}/video/${id}.mp4`
+		})
+	} catch (error) {
+		res.json({
+			error: "Something went wrong.",
+		})
+	}
+}
+
+module.exports = { getVideo, uploadVideo }
