@@ -3,5 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "Deekshant Yadav <d33kshant@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3"
+  }
 }
