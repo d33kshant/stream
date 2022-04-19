@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "Deekshant Yadav <d33kshant@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon index"
+  },
   "dependencies": {
     "dotenv": "^16.0.0",
     "express": "^4.17.3"
