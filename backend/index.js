@@ -14,3 +14,14 @@ app.get('/', (req, res)=>{
 const server = app.listen(PORT, ()=>{
 	console.log('Server listening on port:', PORT)
 })
+
+const gracefulShutdown = signal => {
+	process.on(signal, async () => {
+		server.close()
+		// TODO: disconnect from database
+		console.log('Server Closed:', signal)
+		process.exit(0)
+	})
+}
+
+["SIGTERM", "SIGINT"].forEach(signal=>gracefulShutdown(signal))
