@@ -1,5 +1,7 @@
 const express = require('express')
 
+const { disconnect } = require('./database')
+
 const PORT = process.env.PORT || 5000
 
 const app = express()
@@ -18,7 +20,7 @@ const server = app.listen(PORT, ()=>{
 const gracefulShutdown = signal => {
 	process.on(signal, async () => {
 		server.close()
-		// TODO: disconnect from database
+		await disconnect()
 		console.log('Server Closed:', signal)
 		process.exit(0)
 	})
