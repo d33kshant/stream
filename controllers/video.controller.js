@@ -52,9 +52,30 @@ const streamVideo = (req, res) => {
  */
 const uploadVideo = (req, res) => {
 	const id = generateId()
-	res.json({
-		video_id: id
-	})
+	try {
+		if (!req.files) {
+			return res.json({
+				error: "No file to upload."
+			})
+		}
+
+		const file = req.files['video']
+		const name = file.name
+		const extension = name.substring(name.lastIndexOf('.'), name.length)
+
+		const newName = `${id}${extension}`
+		const newPath = path.join(__dirname, '..', 'videos', newName)
+		file.mv(newPath)
+		
+		res.json({
+			message: "File Uploaded.",
+			vid: newName,
+		})
+	} catch (_) {
+		res.json({
+			error: "Something went wrong."
+		})
+	}
 }
 
 module.exports = { streamVideo, uploadVideo }
