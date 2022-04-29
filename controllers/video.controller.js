@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+// const mime = require('mime-type')
 const { generate: generateId } = require('shortid')
 
 /**
@@ -10,15 +11,18 @@ const streamVideo = (req, res) => {
 	const { v: id } = req.query
 	const range = req.headers.range
 
+	console.log(range)
+
 	if (!range) {
 		return res.json({
-			error: "Range is missing."
+			error: "Range is missing in headers."
 		})
 	}
 
 	try {
-		const filePath = path.join(__dirname, '..', 'videos', `${id}.mp4`)
+		const filePath = path.join(__dirname, '..', 'videos', `${id}`)
 		const fileSize = fs.statSync(filePath).size
+		const fileType = "video/mp4" //mime.lookup(filePath)
 
 		const CHUNK_SIZE = 10**6
 		const start = Number(range.replace(/\D/g, ""))
@@ -29,7 +33,7 @@ const streamVideo = (req, res) => {
 			"Content-Range": `bytes ${start}-${end}/${fileSize}`,
 			"Accept-Ranges": "bytes",
 			"Content-Length": contentLength,
-			"Content-Type": "video/mp4",
+			"Content-Type": fileType,
 		}
 
 		res.writeHead(206, headers)
