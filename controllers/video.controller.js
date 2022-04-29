@@ -11,8 +11,6 @@ const streamVideo = (req, res) => {
 	const { v: id } = req.query
 	const range = req.headers.range
 
-	console.log(range)
-
 	if (!range) {
 		return res.json({
 			error: "Range is missing in headers."
