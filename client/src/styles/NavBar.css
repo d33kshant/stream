@@ -1,0 +1,22 @@
+.navbar-container {
+	display: flex;
+	border-bottom: 1px solid #333;
+	width: 100%;
+	padding: 10px 16px;
+	justify-content: center;
+	align-items: center;
+	font-weight: 500;
+	box-sizing: border-box;
+	position: sticky;
+	top: 0;
+	background: #222;
+	font-size: 1.2em;
+}
+
+.navbar-logo {
+	text-decoration: none;
+	color: white;
+	display: flex;
+	gap: 4px;
+	align-items: center;
+}

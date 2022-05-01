@@ -1,0 +1,27 @@
+.video-skeleton-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.video-skeleton-thumbnail {
+	border-radius: 4px;
+	background: #222;
+	width: 100%;
+	height: 150px;
+	margin-bottom: 8px;
+}
+
+.video-skeleton-title {
+	background: #222;
+	border-radius: 4px;
+	width: 100%;
+	height: 16px;
+	margin-bottom: 8px;
+}
+
+.video-skeleton-info {
+	border-radius: 4px;
+	width: 60%;
+	height: 12px;
+	background: #222;
+}
