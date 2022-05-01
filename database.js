@@ -1,7 +1,4 @@
-const Pool = require('pg').Pool
+const { Pool } = require('pg')
 const pool = new Pool()
 
-const connect = () => pool.connect()
-const disconnect = () => pool.end()
-
-module.exports = { connect, disconnect }
+module.exports = pool
