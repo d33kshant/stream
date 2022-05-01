@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 // const mime = require('mime-type')
 const { generate: generateId } = require('shortid')
+const pool = require('../database')
 
 /**
  * @param {Request} req
@@ -20,7 +21,7 @@ const streamVideo = (req, res) => {
 	try {
 		const filePath = path.join(__dirname, '..', 'videos', `${id}`)
 		const fileSize = fs.statSync(filePath).size
-		const fileType = "video/mp4" //mime.lookup(filePath)
+		const fileType = "video/mp4"
 
 		const CHUNK_SIZE = 10**6
 		const start = Number(range.replace(/\D/g, ""))
@@ -50,7 +51,7 @@ const streamVideo = (req, res) => {
  * @param {Request} req
  * @param {Response} res
  */
-const uploadVideo = (req, res) => {
+const uploadVideo = async (req, res) => {
 	const id = generateId()
 	try {
 		if (!req.files) {
@@ -65,11 +66,18 @@ const uploadVideo = (req, res) => {
 
 		const newName = `${id}${extension}`
 		const newPath = path.join(__dirname, '..', 'videos', newName)
-		file.mv(newPath)
-		
+		await file.mv(newPath)
+
+		await pool.query(
+			'INSERT INTO videos (id, title, author, thumbnail) VALUES ($1, $2, $3, $4);',
+			[newName, name.substring(0, name.lastIndexOf('.')), 1, `/thumbnails/${id}.jpg`]
+		)
+
+		await pool.query('INSERT INTO views (video) VALUES ($1);', [newName])
+
 		res.json({
-			message: "File Uploaded.",
-			vid: newName,
+			messge: "Video uploaded successfuly.",
+			url: process.env.BASR_URL + '/watch?v=' + newName 
 		})
 	} catch (_) {
 		res.json({
@@ -78,4 +86,45 @@ const uploadVideo = (req, res) => {
 	}
 }
 
-module.exports = { streamVideo, uploadVideo }
+/**
+ * @param {Request} req
+ * @param {Response} res 
+ */
+const getVideos = async (req, res) => {
+	
+	const { p } = req.query || 0
+	const offset = p-1 >= 0 ? p-1 : 0
+
+	try {
+		const query_result = await pool.query(
+			'SELECT videos.id AS vid, title, time, thumbnail, username AS author, count AS views FROM users INNER JOIN videos ON author=users.id INNER JOIN views ON videos.id=video OFFSET $1 LIMIT 10;',
+			[offset]
+		)
+		res.json([...query_result.rows])
+	} catch(error) {
+		res.json({
+			error: "Something went wrong.",
+			payload: error
+		})
+	}
+}
+
+/**
+ * @param {Request} req
+ * @param {Response} res
+ */
+const updateViews = async (req, res) => {
+	const { id } = req.params
+	try {
+		await pool.query('UPDATE views SET count = count + 1 WHERE video=$1;', [id]);
+		res.json({
+			message: "Added view in count."
+		})
+	} catch (error) {
+		res.json({
+			error: "Somthing went wrong."
+		})
+	}
+}
+
+module.exports = { streamVideo, uploadVideo, getVideos, updateViews }
